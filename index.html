@@ -6,7 +6,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="screen-orientation" content="landscape">
-<title>Pedal Tier List</title>
+<title>Ivanizer: Presented by Pedalboardom</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
@@ -45,7 +45,7 @@
     flex-direction: column;
   }
 
-  /* ─── Rotate prompt for portrait ─── */
+  /* ─── Rotate prompt ─── */
   #rotate-prompt {
     display: none;
     position: fixed;
@@ -60,175 +60,90 @@
     text-align: center;
     padding: 30px;
   }
-  #rotate-prompt .rotate-icon {
-    font-size: 64px;
-    animation: wiggle 1.5s ease-in-out infinite;
-  }
-  #rotate-prompt h2 {
-    font-family: 'Press Start 2P', monospace;
-    font-size: 14px;
-    line-height: 1.8;
-  }
-  #rotate-prompt p {
-    color: rgba(255,255,255,0.5);
-    font-size: 12px;
-    max-width: 300px;
-  }
+  #rotate-prompt .rotate-icon { font-size: 64px; animation: wiggle 1.5s ease-in-out infinite; }
+  #rotate-prompt h2 { font-family: 'Press Start 2P', monospace; font-size: 14px; line-height: 1.8; }
+  #rotate-prompt p { color: rgba(255,255,255,0.5); font-size: 12px; max-width: 300px; }
   #rotate-prompt .dismiss-btn {
-    margin-top: 8px;
-    padding: 12px 28px;
-    border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 8px;
-    background: rgba(255,255,255,0.08);
-    color: #fff;
-    font-family: 'Space Mono', monospace;
-    font-size: 12px;
-    cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
+    margin-top: 8px; padding: 12px 28px;
+    border: 1px solid rgba(255,255,255,0.2); border-radius: 8px;
+    background: rgba(255,255,255,0.08); color: #fff;
+    font-family: 'Space Mono', monospace; font-size: 12px;
+    cursor: pointer; -webkit-tap-highlight-color: transparent;
   }
   @keyframes wiggle {
     0%,100% { transform: rotate(0deg); }
     25% { transform: rotate(-15deg); }
     75% { transform: rotate(15deg); }
   }
-
   @media (orientation: portrait) and (max-width: 900px) {
     #rotate-prompt.auto-show { display: flex; }
   }
 
-  /* ─── Top toolbar ─── */
+  /* ─── Toolbar ─── */
   #toolbar {
-    position: relative;
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    position: relative; z-index: 100;
+    display: flex; align-items: center; gap: 8px;
     padding: 6px 10px;
-    background: var(--panel-bg);
-    backdrop-filter: blur(16px);
+    background: var(--panel-bg); backdrop-filter: blur(16px);
     border-bottom: 1px solid var(--panel-border);
-    flex-shrink: 0;
-    flex-wrap: nowrap;
+    flex-shrink: 0; flex-wrap: nowrap;
   }
-
   #toolbar h1 {
-    font-family: 'Press Start 2P', monospace;
-    font-size: 11px;
-    color: #fff;
-    white-space: nowrap;
-    letter-spacing: 1px;
-    flex-shrink: 0;
+    font-family: 'Press Start 2P', monospace; font-size: 11px;
+    color: #fff; white-space: nowrap; letter-spacing: 1px; flex-shrink: 0;
+  }
+  .toolbar-sub {
+    color: rgba(255,255,255,0.35); font-size: 9px;
+    font-style: italic; white-space: nowrap; margin-left: -4px;
   }
 
-  #search-wrap {
-    position: relative;
-    flex: 1;
-    min-width: 140px;
-    max-width: 480px;
-  }
-
+  #search-wrap { position: relative; flex: 1; min-width: 140px; max-width: 480px; }
   #search-input {
-    width: 100%;
-    padding: 7px 10px 7px 30px;
-    border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 6px;
-    background: rgba(255,255,255,0.07);
-    color: #fff;
-    font-family: 'Space Mono', monospace;
-    font-size: 13px;
-    outline: none;
-    transition: border-color 0.2s;
-    -webkit-appearance: none;
+    width: 100%; padding: 7px 10px 7px 30px;
+    border: 1px solid rgba(255,255,255,0.15); border-radius: 6px;
+    background: rgba(255,255,255,0.07); color: #fff;
+    font-family: 'Space Mono', monospace; font-size: 13px;
+    outline: none; -webkit-appearance: none;
   }
   #search-input::placeholder { color: rgba(255,255,255,0.35); }
   #search-input:focus { border-color: rgba(255,255,255,0.4); }
-
   #search-wrap::before {
-    content: '⌕';
-    position: absolute;
-    left: 9px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: rgba(255,255,255,0.35);
-    font-size: 14px;
-    pointer-events: none;
+    content: '⌕'; position: absolute; left: 9px; top: 50%;
+    transform: translateY(-50%); color: rgba(255,255,255,0.35);
+    font-size: 14px; pointer-events: none;
   }
 
   #results-dropdown {
-    display: none;
-    position: absolute;
-    top: calc(100% + 4px);
-    left: 0;
-    right: 0;
-    max-height: min(360px, 55vh);
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    background: var(--panel-bg);
-    backdrop-filter: blur(20px);
-    border: 1px solid var(--panel-border);
-    border-radius: 8px;
-    box-shadow: 0 12px 40px rgba(0,0,0,0.5);
-    z-index: 200;
+    display: none; position: absolute; top: calc(100% + 4px); left: 0; right: 0;
+    max-height: min(360px, 55vh); overflow-y: auto; -webkit-overflow-scrolling: touch;
+    background: var(--panel-bg); backdrop-filter: blur(20px);
+    border: 1px solid var(--panel-border); border-radius: 8px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.5); z-index: 200;
   }
-
   .result-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 7px 10px;
-    cursor: pointer;
-    transition: background 0.15s;
-    border-bottom: 1px solid rgba(255,255,255,0.04);
+    display: flex; align-items: center; gap: 8px; padding: 7px 10px;
+    cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.04);
     -webkit-tap-highlight-color: transparent;
   }
   .result-item:hover, .result-item.active { background: rgba(255,255,255,0.08); }
-
   .result-item img {
-    width: 30px;
-    height: 30px;
-    object-fit: contain;
-    border-radius: 3px;
-    background: rgba(255,255,255,0.06);
-    flex-shrink: 0;
+    width: 30px; height: 30px; object-fit: contain;
+    border-radius: 3px; background: rgba(255,255,255,0.06); flex-shrink: 0;
   }
-
-  .result-item .pedal-info {
-    flex: 1;
-    min-width: 0;
-  }
+  .result-item .pedal-info { flex: 1; min-width: 0; }
   .result-item .pedal-name {
-    color: #fff;
-    font-size: 11px;
-    font-weight: 700;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    color: #fff; font-size: 11px; font-weight: 700;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
-  .result-item .pedal-brand {
-    color: rgba(255,255,255,0.45);
-    font-size: 9px;
-  }
+  .result-item .pedal-brand { color: rgba(255,255,255,0.45); font-size: 9px; }
 
-  .tier-buttons {
-    display: flex;
-    gap: 4px;
-    flex-shrink: 0;
-  }
+  .tier-buttons { display: flex; gap: 4px; flex-shrink: 0; }
   .tier-btn {
-    width: 32px;
-    height: 32px;
-    border: none;
-    border-radius: 5px;
-    font-family: 'Press Start 2P', monospace;
-    font-size: 9px;
-    cursor: pointer;
-    color: #fff;
-    opacity: 0.85;
-    transition: opacity 0.15s, transform 0.15s;
+    width: 32px; height: 32px; border: none; border-radius: 5px;
+    font-family: 'Press Start 2P', monospace; font-size: 9px;
+    cursor: pointer; color: #fff; opacity: 0.85;
     -webkit-tap-highlight-color: transparent;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
   }
   .tier-btn:hover, .tier-btn:active { opacity: 1; transform: scale(1.1); }
   .tier-btn[data-tier="ultra"] { background: var(--ultra-color); }
@@ -236,48 +151,27 @@
   .tier-btn[data-tier="mid"]   { background: var(--mid-color); }
   .tier-btn[data-tier="low"]   { background: var(--low-color); }
 
-  .toolbar-actions {
-    display: flex;
-    gap: 5px;
-    margin-left: auto;
-    flex-shrink: 0;
-  }
-
+  .toolbar-actions { display: flex; gap: 5px; margin-left: auto; flex-shrink: 0; }
   .action-btn {
     padding: 6px 10px;
-    border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 6px;
-    background: rgba(255,255,255,0.06);
-    color: rgba(255,255,255,0.7);
-    font-family: 'Space Mono', monospace;
-    font-size: 11px;
-    cursor: pointer;
+    border: 1px solid rgba(255,255,255,0.15); border-radius: 6px;
+    background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.7);
+    font-family: 'Space Mono', monospace; font-size: 11px;
+    cursor: pointer; white-space: nowrap; -webkit-tap-highlight-color: transparent;
     transition: all 0.2s;
-    white-space: nowrap;
-    -webkit-tap-highlight-color: transparent;
   }
   .action-btn:hover, .action-btn:active { background: rgba(255,255,255,0.12); color: #fff; }
   .action-btn.danger:hover, .action-btn.danger:active { background: rgba(255,50,50,0.3); border-color: rgba(255,50,50,0.4); }
-
   .action-btn .btn-label { display: inline; }
 
   /* ─── Tier area ─── */
   #tier-container {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    padding: 8px;
-    gap: 6px;
-    overflow: hidden;
+    flex: 1; display: flex; flex-direction: column;
+    padding: 8px; gap: 6px; overflow: hidden;
   }
-
   .tier-row {
-    flex: 1;
-    display: flex;
-    align-items: stretch;
-    min-height: 0;
-    border-radius: 6px;
-    overflow: hidden;
+    flex: 1; display: flex; align-items: stretch;
+    min-height: 0; border-radius: 6px; overflow: hidden;
     background: rgba(255,255,255,0.03);
     border: 1px solid rgba(255,255,255,0.04);
     transition: box-shadow 0.2s, background 0.2s;
@@ -286,252 +180,183 @@
     box-shadow: inset 0 0 0 2px rgba(255,255,255,0.3);
     background: rgba(255,255,255,0.06);
   }
-
   .tier-label {
-    width: var(--label-w);
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: var(--label-w); flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
     font-family: 'Press Start 2P', monospace;
     font-size: clamp(12px, 2.5vw, 28px);
-    color: #fff;
-    text-shadow: 2px 2px 0 rgba(0,0,0,0.4);
-    letter-spacing: 1px;
-    position: relative;
-    user-select: none;
+    color: #fff; text-shadow: 2px 2px 0 rgba(0,0,0,0.4);
+    letter-spacing: 1px; position: relative; user-select: none;
   }
   .tier-label::after {
-    content: '';
-    position: absolute;
-    right: 0;
-    top: 10%;
-    height: 80%;
-    width: 1px;
-    background: rgba(255,255,255,0.1);
+    content: ''; position: absolute; right: 0; top: 10%; height: 80%;
+    width: 1px; background: rgba(255,255,255,0.1);
   }
-
   .tier-row[data-tier="ultra"] .tier-label { background: linear-gradient(135deg, var(--ultra-color), #ff6b8a); }
   .tier-row[data-tier="high"]  .tier-label { background: linear-gradient(135deg, var(--high-color), #7a79f0); }
   .tier-row[data-tier="mid"]   .tier-label { background: linear-gradient(135deg, var(--mid-color), #6ee78a); }
   .tier-row[data-tier="low"]   .tier-label { background: linear-gradient(135deg, var(--low-color), #4aa3ff); }
 
   .tier-pedals {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    padding: 4px 8px;
-    min-height: 0;
-    overflow-x: auto;
-    overflow-y: hidden;
+    flex: 1; display: flex; align-items: center; gap: 6px;
+    padding: 4px 10px; min-height: 0;
+    overflow-x: auto; overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(255,255,255,0.15) transparent;
+    scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.15) transparent;
   }
   .tier-pedals::-webkit-scrollbar { height: 3px; }
   .tier-pedals::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 2px; }
-
   .tier-pedals .empty-hint {
-    color: rgba(0,0,0,0.2);
-    font-size: 10px;
-    font-style: italic;
-    white-space: nowrap;
-    user-select: none;
-    pointer-events: none;
+    color: rgba(0,0,0,0.2); font-size: 10px;
+    font-style: italic; white-space: nowrap;
+    user-select: none; pointer-events: none;
   }
 
   /* ─── Pedal cards ─── */
   .pedal-card {
-    position: relative;
-    flex-shrink: 0;
-    height: calc(100% - 4px);
-    aspect-ratio: var(--pedal-ar, 0.75);
-    cursor: grab;
+    position: relative; flex-shrink: 0;
+    height: calc(100% - 4px); aspect-ratio: var(--pedal-ar, 0.75);
+    cursor: grab; border-radius: 3px; overflow: hidden;
+    user-select: none; -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent; touch-action: none;
     transition: transform 0.15s, opacity 0.15s, box-shadow 0.15s;
-    border-radius: 3px;
-    overflow: hidden;
-    user-select: none;
-    -webkit-user-select: none;
-    -webkit-tap-highlight-color: transparent;
-    touch-action: none;
   }
-  .pedal-card:hover {
-    transform: scale(1.06);
-    z-index: 10;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.35);
-  }
+  .pedal-card:hover { transform: scale(1.06); z-index: 10; box-shadow: 0 4px 20px rgba(0,0,0,0.35); }
   .pedal-card:active { cursor: grabbing; }
-  .pedal-card.dragging {
-    opacity: 0.2;
-    transform: scale(0.92);
-  }
-
+  .pedal-card.dragging { opacity: 0.2; transform: scale(0.92); }
   .pedal-card img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    pointer-events: none;
-    display: block;
-    -webkit-user-drag: none;
+    width: 100%; height: 100%; object-fit: contain;
+    pointer-events: none; display: block; -webkit-user-drag: none;
   }
-
   .pedal-card .remove-btn {
-    position: absolute;
-    top: 1px;
-    right: 1px;
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    border: none;
-    background: rgba(0,0,0,0.75);
-    color: #fff;
-    font-size: 13px;
-    line-height: 22px;
-    text-align: center;
-    cursor: pointer;
-    opacity: 0;
-    transition: opacity 0.15s;
-    z-index: 5;
-    -webkit-tap-highlight-color: transparent;
+    position: absolute; top: 1px; right: 1px;
+    width: 22px; height: 22px; border-radius: 50%; border: none;
+    background: rgba(0,0,0,0.75); color: #fff; font-size: 13px;
+    line-height: 22px; text-align: center; cursor: pointer;
+    opacity: 0; z-index: 5; -webkit-tap-highlight-color: transparent;
   }
-  .pedal-card:hover .remove-btn,
-  .pedal-card.show-remove .remove-btn { opacity: 1; }
+  .pedal-card:hover .remove-btn, .pedal-card.show-remove .remove-btn { opacity: 1; }
   .pedal-card .remove-btn:hover { background: var(--ultra-color); }
-
   .pedal-card .pedal-tooltip {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 2px 3px;
-    background: rgba(0,0,0,0.75);
-    color: #fff;
-    font-size: 7px;
-    font-family: 'Space Mono', monospace;
-    text-align: center;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    opacity: 0;
-    transition: opacity 0.15s;
-    pointer-events: none;
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 2px 3px; background: rgba(0,0,0,0.75); color: #fff;
+    font-size: 7px; font-family: 'Space Mono', monospace;
+    text-align: center; white-space: nowrap; overflow: hidden;
+    text-overflow: ellipsis; opacity: 0; pointer-events: none;
   }
-  .pedal-card:hover .pedal-tooltip,
-  .pedal-card.show-remove .pedal-tooltip { opacity: 1; }
+  .pedal-card:hover .pedal-tooltip, .pedal-card.show-remove .pedal-tooltip { opacity: 1; }
 
-  /* Touch ghost element */
+  /* Touch ghost */
   #touch-ghost {
-    position: fixed;
-    z-index: 9999;
-    pointer-events: none;
-    opacity: 0.85;
-    border-radius: 4px;
-    overflow: hidden;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.5);
-    transform: scale(1.1);
+    position: fixed; z-index: 9999; pointer-events: none;
+    opacity: 0.85; border-radius: 4px; overflow: hidden;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.5); transform: scale(1.1);
   }
-  #touch-ghost img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    display: block;
-  }
+  #touch-ghost img { width: 100%; height: 100%; object-fit: contain; display: block; }
 
-  /* Drag placeholder */
   .drag-placeholder {
-    flex-shrink: 0;
-    height: calc(100% - 4px);
-    width: 40px;
-    border: 2px dashed rgba(0,0,0,0.15);
-    border-radius: 4px;
+    flex-shrink: 0; height: calc(100% - 4px); width: 40px;
+    border: 2px dashed rgba(0,0,0,0.15); border-radius: 4px;
     background: rgba(0,0,0,0.04);
-    transition: width 0.15s;
   }
 
-  /* ─── Loading overlay ─── */
+  /* ─── Loading ─── */
   #loading {
-    position: fixed;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background: var(--panel-bg);
-    z-index: 9999;
-    gap: 16px;
+    position: fixed; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    background: var(--panel-bg); z-index: 9999; gap: 12px;
     transition: opacity 0.4s;
   }
   #loading.hidden { opacity: 0; pointer-events: none; }
-  #loading h2 {
-    font-family: 'Press Start 2P', monospace;
-    font-size: 14px;
-    color: #fff;
-  }
+  #loading h2 { font-family: 'Press Start 2P', monospace; font-size: 16px; color: #fff; }
+  #loading .sub { color: rgba(255,255,255,0.35); font-size: 10px; font-style: italic; }
   .spinner {
-    width: 28px;
-    height: 28px;
-    border: 3px solid rgba(255,255,255,0.1);
-    border-top-color: #fff;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
+    width: 28px; height: 28px;
+    border: 3px solid rgba(255,255,255,0.1); border-top-color: #fff;
+    border-radius: 50%; animation: spin 0.8s linear infinite;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* ─── Export overlay ─── */
-  #export-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.6);
-    z-index: 500;
-    align-items: center;
-    justify-content: center;
-    padding: 10px;
+  /* ─── Modals (shared) ─── */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.6); z-index: 500;
+    align-items: center; justify-content: center; padding: 10px;
   }
-  #export-overlay.active { display: flex; }
-  #export-panel {
+  .modal-overlay.active { display: flex; }
+  .modal-panel {
     background: var(--panel-bg);
-    border: 1px solid var(--panel-border);
-    border-radius: 12px;
-    padding: 16px;
-    max-width: 94vw;
-    max-height: 92vh;
+    border: 1px solid var(--panel-border); border-radius: 12px;
+    padding: 20px; max-width: 94vw; max-height: 92vh;
+    overflow: auto; -webkit-overflow-scrolling: touch;
+    color: rgba(255,255,255,0.8); font-size: 13px; line-height: 1.7;
+  }
+  .modal-panel h3 {
+    font-family: 'Press Start 2P', monospace; font-size: 11px;
+    color: #fff; margin-bottom: 14px; text-align: center;
+  }
+  .modal-panel .btn-row {
+    display: flex; gap: 10px; justify-content: center;
+    flex-wrap: wrap; margin-top: 16px;
+  }
+
+  /* ─── About modal specifics ─── */
+  #about-panel { max-width: 560px; }
+  #about-panel a { color: #5ac8fa; text-decoration: none; }
+  #about-panel a:hover { text-decoration: underline; }
+  #about-panel .section { margin-bottom: 14px; }
+  #about-panel .section-title {
+    font-family: 'Press Start 2P', monospace; font-size: 8px;
+    color: rgba(255,255,255,0.45); text-transform: uppercase;
+    letter-spacing: 1px; margin-bottom: 6px;
+  }
+  #about-panel .help-item {
+    display: flex; align-items: baseline; gap: 8px; margin: 4px 0;
+  }
+  #about-panel .help-icon { font-size: 14px; flex-shrink: 0; width: 22px; text-align: center; }
+  #about-panel .help-text { flex: 1; font-size: 12px; }
+
+  /* ─── Title input modal ─── */
+  #title-panel { max-width: 480px; text-align: center; }
+  #title-input {
+    width: 100%; padding: 10px 14px; margin: 10px 0;
+    border: 1px solid rgba(255,255,255,0.2); border-radius: 6px;
+    background: rgba(255,255,255,0.08); color: #fff;
+    font-family: 'Space Mono', monospace; font-size: 14px;
+    outline: none; -webkit-appearance: none;
+  }
+  #title-input::placeholder { color: rgba(255,255,255,0.3); }
+  #title-input:focus { border-color: rgba(255,255,255,0.4); }
+
+  /* ─── Title banner on canvas ─── */
+  #title-banner {
+    display: none;
+    padding: 4px 12px;
     text-align: center;
-    overflow: auto;
-    -webkit-overflow-scrolling: touch;
+    flex-shrink: 0;
   }
-  #export-panel h3 {
+  #title-banner.visible { display: block; }
+  #title-banner span {
     font-family: 'Press Start 2P', monospace;
-    font-size: 10px;
-    color: #fff;
-    margin-bottom: 12px;
+    font-size: clamp(10px, 2vw, 18px);
+    color: rgba(0,0,0,0.55);
+    text-shadow: 1px 1px 0 rgba(255,255,255,0.3);
+    letter-spacing: 1px;
   }
+
+  /* ─── Export ─── */
   #export-canvas-wrap {
-    max-width: 88vw;
-    max-height: 55vh;
-    overflow: auto;
-    margin-bottom: 12px;
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 6px;
-    -webkit-overflow-scrolling: touch;
+    max-width: 88vw; max-height: 55vh; overflow: auto;
+    margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 6px; -webkit-overflow-scrolling: touch;
   }
-  #export-canvas-wrap canvas {
-    display: block;
-    max-width: 100%;
-    height: auto;
-  }
-  #export-panel .btn-row {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
+  #export-canvas-wrap canvas { display: block; max-width: 100%; height: auto; }
 
   /* ─── Responsive ─── */
   @media (max-width: 700px) {
     :root { --label-w: 60px; }
     #toolbar h1 { font-size: 8px; }
+    .toolbar-sub { display: none; }
     .action-btn .btn-label { display: none; }
     .action-btn { padding: 6px 8px; font-size: 14px; min-width: 34px; text-align: center; }
     #search-input { font-size: 12px; padding: 6px 8px 6px 26px; }
@@ -539,24 +364,25 @@
     .tier-label { font-size: clamp(8px, 2vw, 14px); letter-spacing: 0; }
     #tier-container { padding: 4px; gap: 4px; }
   }
-
   @media (max-height: 420px) {
     #toolbar { padding: 3px 6px; gap: 5px; }
     #toolbar h1 { display: none; }
+    .toolbar-sub { display: none; }
     #tier-container { padding: 3px; gap: 3px; }
-    .tier-pedals { padding: 2px 4px; gap: 3px; }
+    .tier-pedals { padding: 2px 4px; gap: 4px; }
+    #title-banner { padding: 2px 8px; }
   }
-
   @media (max-width: 500px) {
     :root { --label-w: 48px; }
     #toolbar h1 { display: none; }
+    .toolbar-sub { display: none; }
     .tier-label { font-size: 8px; }
   }
 </style>
 </head>
 <body>
 
-<!-- Rotate prompt for portrait mobile -->
+<!-- Rotate prompt -->
 <div id="rotate-prompt" class="auto-show">
   <div class="rotate-icon">📱↻</div>
   <h2>ROTATE YOUR<br>DEVICE</h2>
@@ -564,26 +390,36 @@
   <button class="dismiss-btn" onclick="dismissRotate()">Continue Anyway</button>
 </div>
 
+<!-- Loading -->
 <div id="loading">
-  <h2>PEDAL TIER LIST</h2>
+  <h2>IVANIZER</h2>
+  <span class="sub">Presented by Pedalboardom</span>
   <div class="spinner"></div>
   <span style="color:rgba(255,255,255,0.4);font-size:11px;">Loading pedal database…</span>
 </div>
 
+<!-- Toolbar -->
 <div id="toolbar">
-  <h1>⚡ TIER LIST</h1>
+  <h1>⚡ IVANIZER</h1>
+  <span class="toolbar-sub">by Pedalboardom</span>
   <div id="search-wrap">
     <input type="text" id="search-input" placeholder="Search pedals…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
     <div id="results-dropdown"></div>
   </div>
   <div class="toolbar-actions">
+    <button class="action-btn" onclick="showTitleModal()">✏️<span class="btn-label"> Title</span></button>
     <button class="action-btn" onclick="exportImage()">📸<span class="btn-label"> Export</span></button>
     <button class="action-btn" onclick="saveTierList()">💾<span class="btn-label"> Save</span></button>
     <button class="action-btn" onclick="loadTierList()">📂<span class="btn-label"> Load</span></button>
     <button class="action-btn danger" onclick="clearAll()">🗑<span class="btn-label"> Clear</span></button>
+    <button class="action-btn" onclick="showAbout()">ℹ️<span class="btn-label"> About</span></button>
   </div>
 </div>
 
+<!-- Title banner -->
+<div id="title-banner"><span id="title-display"></span></div>
+
+<!-- Tier rows -->
 <div id="tier-container">
   <div class="tier-row" data-tier="ultra">
     <div class="tier-label">ULTRA</div>
@@ -603,9 +439,61 @@
   </div>
 </div>
 
-<div id="export-overlay">
-  <div id="export-panel">
-    <h3>EXPORT TIER LIST</h3>
+<!-- About modal -->
+<div id="about-overlay" class="modal-overlay">
+  <div id="about-panel" class="modal-panel">
+    <h3>ABOUT IVANIZER</h3>
+
+    <div class="section">
+      <div class="section-title">What is this?</div>
+      Musician <strong style="color:#fff">Ivan Anderson</strong> (known on YouTube as
+      <a href="https://www.youtube.com/@cyberattack" target="_blank" rel="noopener">cyberattack</a>)
+      makes tier-ranking videos where he sorts various categories of guitar pedals
+      into tiers — Ultra, High, Mid, and Low. The Ivanizer is an homage to that format,
+      letting you build your own pedal tier lists using the same layout.
+    </div>
+
+    <div class="section">
+      <div class="section-title">How to use</div>
+      <div class="help-item"><span class="help-icon">🔍</span><span class="help-text"><strong style="color:#fff">Search</strong> — Type a brand or pedal name to find it, then tap a tier button (U/H/M/L) to add it.</span></div>
+      <div class="help-item"><span class="help-icon">✏️</span><span class="help-text"><strong style="color:#fff">Title</strong> — Set a title for your tier list (e.g. "Every Reverb I've Ever Owned"). Shows up on the canvas and in the exported image.</span></div>
+      <div class="help-item"><span class="help-icon">📸</span><span class="help-text"><strong style="color:#fff">Export</strong> — Renders your tier list as a PNG image with the graph paper background, ready to share.</span></div>
+      <div class="help-item"><span class="help-icon">💾</span><span class="help-text"><strong style="color:#fff">Save</strong> — Downloads your tier list as a JSON file so you can back it up or share the raw data.</span></div>
+      <div class="help-item"><span class="help-icon">📂</span><span class="help-text"><strong style="color:#fff">Load</strong> — Load a previously saved JSON tier list file.</span></div>
+      <div class="help-item"><span class="help-icon">🗑</span><span class="help-text"><strong style="color:#fff">Clear</strong> — Remove all pedals from every tier and start fresh.</span></div>
+      <div class="help-item"><span class="help-icon">↔️</span><span class="help-text"><strong style="color:#fff">Reorder</strong> — Drag pedals to reorder within a tier or move them between tiers. On mobile, long-press or swipe to start dragging.</span></div>
+    </div>
+
+    <div class="section" style="margin-bottom:0;">
+      <div class="section-title">Credits</div>
+      Built by <a href="https://www.linkedin.com/in/jeremydabramson/" target="_blank" rel="noopener">Jeremy Abramson</a> (aka <strong style="color:#fff">Pedalboardom</strong>).<br>
+      Pedal data &amp; images by <a href="https://github.com/PedalPlayground/pedalplayground" target="_blank" rel="noopener">Pedal Playground</a>.
+    </div>
+
+    <div class="btn-row">
+      <button class="action-btn" onclick="closeAbout()">✕ Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Title modal -->
+<div id="title-overlay" class="modal-overlay">
+  <div id="title-panel" class="modal-panel">
+    <h3>SET TITLE</h3>
+    <p style="font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:4px;">This title appears above the tiers and on the exported image.</p>
+    <input type="text" id="title-input" placeholder="e.g. Every Reverb I've Ever Owned" maxlength="80" autocomplete="off" autocorrect="off" spellcheck="false" />
+    <div class="btn-row">
+      <button class="action-btn" onclick="applyTitle()">✓ Apply</button>
+      <button class="action-btn" onclick="clearTitle()">🗑 Clear Title</button>
+      <button class="action-btn" onclick="closeTitleModal()">✕ Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Export modal -->
+<div id="export-overlay" class="modal-overlay">
+  <div class="modal-panel" style="max-width:94vw;text-align:center;">
+    <h3>EXPORT IVANIZER</h3>
     <div id="export-canvas-wrap"></div>
     <div class="btn-row">
       <button class="action-btn" onclick="downloadExport()">⬇<span class="btn-label"> Download PNG</span></button>
@@ -614,7 +502,7 @@
   </div>
 </div>
 
-<!-- Touch ghost for drag -->
+<!-- Touch ghost -->
 <div id="touch-ghost" style="display:none;"></div>
 
 <script>
@@ -626,23 +514,62 @@ const isTouchDevice = ('ontouchstart' in window) || navigator.maxTouchPoints > 0
 // ─── State ───
 let allPedals = [];
 let tierData = { ultra: [], high: [], mid: [], low: [] };
+let canvasTitle = '';
 let searchActiveIndex = -1;
 
 // ─── Rotate prompt ───
 let rotateDismissed = false;
 function dismissRotate() {
   rotateDismissed = true;
-  document.getElementById('rotate-prompt').classList.remove('auto-show');
-  document.getElementById('rotate-prompt').style.display = 'none';
+  const el = document.getElementById('rotate-prompt');
+  el.classList.remove('auto-show'); el.style.display = 'none';
 }
-// Auto-dismiss when user rotates to landscape
 window.addEventListener('resize', () => {
-  if (!rotateDismissed && window.innerWidth > window.innerHeight) {
-    dismissRotate();
-  }
+  if (!rotateDismissed && window.innerWidth > window.innerHeight) dismissRotate();
 });
-// Try screen orientation lock
 try { screen.orientation.lock('landscape').catch(() => {}); } catch(e) {}
+
+// ─── About ───
+function showAbout() { document.getElementById('about-overlay').classList.add('active'); }
+function closeAbout() { document.getElementById('about-overlay').classList.remove('active'); }
+
+// ─── Title ───
+function showTitleModal() {
+  document.getElementById('title-input').value = canvasTitle;
+  document.getElementById('title-overlay').classList.add('active');
+  setTimeout(() => document.getElementById('title-input').focus(), 100);
+}
+function closeTitleModal() { document.getElementById('title-overlay').classList.remove('active'); }
+function applyTitle() {
+  canvasTitle = document.getElementById('title-input').value.trim();
+  updateTitleBanner();
+  closeTitleModal();
+  autoSave();
+}
+function clearTitle() {
+  canvasTitle = '';
+  document.getElementById('title-input').value = '';
+  updateTitleBanner();
+  closeTitleModal();
+  autoSave();
+}
+function updateTitleBanner() {
+  const banner = document.getElementById('title-banner');
+  const display = document.getElementById('title-display');
+  if (canvasTitle) {
+    display.textContent = canvasTitle;
+    banner.classList.add('visible');
+  } else {
+    banner.classList.remove('visible');
+  }
+}
+// Enter key in title input
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('title-input').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') applyTitle();
+    if (e.key === 'Escape') closeTitleModal();
+  });
+});
 
 // ─── Init ───
 async function init() {
@@ -658,9 +585,15 @@ async function init() {
     alert('Could not load pedal database. Check your connection.');
   }
 
-  const saved = localStorage.getItem('pedalTierList');
+  const saved = localStorage.getItem('pedalTierList_v2');
   if (saved) {
-    try { tierData = JSON.parse(saved); renderAll(); } catch(e) {}
+    try {
+      const d = JSON.parse(saved);
+      if (d.tiers) tierData = d.tiers;
+      if (d.title) canvasTitle = d.title;
+      renderAll();
+      updateTitleBanner();
+    } catch(e) {}
   }
 
   document.getElementById('loading').classList.add('hidden');
@@ -679,28 +612,24 @@ function setupSearch() {
   input.addEventListener('input', () => {
     const q = input.value.trim().toLowerCase();
     if (q.length < 2) { dropdown.style.display = 'none'; searchActiveIndex = -1; return; }
-
     const matches = allPedals.filter(p => {
       const hay = `${p.Brand} ${p.Name}`.toLowerCase();
       return q.split(/\s+/).every(w => hay.includes(w));
     }).slice(0, 30);
-
     if (!matches.length) { dropdown.style.display = 'none'; searchActiveIndex = -1; return; }
-
     dropdown.innerHTML = matches.map((p, i) => {
       const gi = allPedals.indexOf(p);
-      return `
-      <div class="result-item" data-index="${i}">
+      return `<div class="result-item" data-index="${i}">
         <img src="${IMAGE_BASE_URL}${p.Image}" loading="lazy" onerror="this.style.display='none'" />
         <div class="pedal-info">
           <div class="pedal-name">${escHtml(p.Name)}</div>
           <div class="pedal-brand">${escHtml(p.Brand)}</div>
         </div>
         <div class="tier-buttons">
-          <button class="tier-btn" data-tier="ultra" onclick="event.stopPropagation(); addPedal('ultra',${gi})">U</button>
-          <button class="tier-btn" data-tier="high"  onclick="event.stopPropagation(); addPedal('high',${gi})">H</button>
-          <button class="tier-btn" data-tier="mid"   onclick="event.stopPropagation(); addPedal('mid',${gi})">M</button>
-          <button class="tier-btn" data-tier="low"   onclick="event.stopPropagation(); addPedal('low',${gi})">L</button>
+          <button class="tier-btn" data-tier="ultra" onclick="event.stopPropagation();addPedal('ultra',${gi})">U</button>
+          <button class="tier-btn" data-tier="high"  onclick="event.stopPropagation();addPedal('high',${gi})">H</button>
+          <button class="tier-btn" data-tier="mid"   onclick="event.stopPropagation();addPedal('mid',${gi})">M</button>
+          <button class="tier-btn" data-tier="low"   onclick="event.stopPropagation();addPedal('low',${gi})">L</button>
         </div>
       </div>`;
     }).join('');
@@ -711,367 +640,237 @@ function setupSearch() {
   input.addEventListener('keydown', (e) => {
     const items = dropdown.querySelectorAll('.result-item');
     if (!items.length || dropdown.style.display === 'none') return;
-    if (e.key === 'ArrowDown') {
-      e.preventDefault();
-      searchActiveIndex = Math.min(searchActiveIndex + 1, items.length - 1);
-      updateActiveItem(items);
-    } else if (e.key === 'ArrowUp') {
-      e.preventDefault();
-      searchActiveIndex = Math.max(searchActiveIndex - 1, 0);
-      updateActiveItem(items);
-    } else if (e.key === 'Escape') {
-      dropdown.style.display = 'none';
-    }
+    if (e.key === 'ArrowDown') { e.preventDefault(); searchActiveIndex = Math.min(searchActiveIndex + 1, items.length - 1); updateActiveItem(items); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); searchActiveIndex = Math.max(searchActiveIndex - 1, 0); updateActiveItem(items); }
+    else if (e.key === 'Escape') { dropdown.style.display = 'none'; }
   });
-
-  // Close dropdown on outside tap/click
   document.addEventListener('pointerdown', (e) => {
     if (!e.target.closest('#search-wrap')) dropdown.style.display = 'none';
   });
 }
-
 function updateActiveItem(items) {
   items.forEach((el, i) => el.classList.toggle('active', i === searchActiveIndex));
   if (items[searchActiveIndex]) items[searchActiveIndex].scrollIntoView({ block: 'nearest' });
 }
 
-function addPedal(tier, globalIndex) {
-  const p = allPedals[globalIndex];
+function addPedal(tier, gi) {
+  const p = allPedals[gi];
   if (!p) return;
   tierData[tier].push({
     id: `${Date.now()}-${Math.random().toString(36).slice(2,8)}`,
     brand: p.Brand, name: p.Name, image: p.Image,
     width: p.Width, height: p.Height,
   });
-  renderTier(tier);
-  autoSave();
+  renderTier(tier); autoSave();
 }
-
 function removePedal(tier, id) {
   tierData[tier] = tierData[tier].filter(p => p.id !== id);
-  renderTier(tier);
-  autoSave();
+  renderTier(tier); autoSave();
 }
 
 // ─── Rendering ───
 function renderAll() { ['ultra','high','mid','low'].forEach(renderTier); }
-
 function renderTier(tier) {
-  const container = document.getElementById(`tier-${tier}`);
+  const c = document.getElementById(`tier-${tier}`);
   const pedals = tierData[tier];
-  if (!pedals.length) {
-    container.innerHTML = '<span class="empty-hint">Search &amp; add pedals →</span>';
-    return;
-  }
-  container.innerHTML = pedals.map(p => {
+  if (!pedals.length) { c.innerHTML = '<span class="empty-hint">Search &amp; add pedals →</span>'; return; }
+  c.innerHTML = pedals.map(p => {
     const ar = (p.width && p.height) ? (p.width / p.height) : 0.75;
-    return `
-      <div class="pedal-card"
-           draggable="true"
-           data-id="${p.id}"
-           data-tier="${tier}"
-           style="--pedal-ar: ${ar.toFixed(3)}">
-        <img src="${IMAGE_BASE_URL}${p.image}" loading="lazy"
-             alt="${escHtml(p.brand)} ${escHtml(p.name)}"
-             onerror="this.parentElement.style.background='#333'" />
-        <button class="remove-btn" onclick="event.stopPropagation(); removePedal('${tier}','${p.id}')">✕</button>
-        <div class="pedal-tooltip">${escHtml(p.brand)} ${escHtml(p.name)}</div>
-      </div>`;
+    return `<div class="pedal-card" draggable="true" data-id="${p.id}" data-tier="${tier}" style="--pedal-ar:${ar.toFixed(3)}">
+      <img src="${IMAGE_BASE_URL}${p.image}" loading="lazy" alt="${escHtml(p.brand)} ${escHtml(p.name)}" onerror="this.parentElement.style.background='#333'" />
+      <button class="remove-btn" onclick="event.stopPropagation();removePedal('${tier}','${p.id}')">✕</button>
+      <div class="pedal-tooltip">${escHtml(p.brand)} ${escHtml(p.name)}</div>
+    </div>`;
   }).join('');
 }
 
-// ══════════════════════════════════════
-//  DESKTOP DRAG & DROP (HTML5 API)
-// ══════════════════════════════════════
-let draggedTier = null;
-let draggedId = null;
-let desktopPlaceholder = null;
-
+// ══════════════════════════════════
+//  DESKTOP DRAG & DROP
+// ══════════════════════════════════
+let draggedTier = null, draggedId = null, desktopPH = null;
 function setupDesktopDragDrop() {
   if (isTouchDevice) return;
-
-  desktopPlaceholder = document.createElement('div');
-  desktopPlaceholder.className = 'drag-placeholder';
-
+  desktopPH = document.createElement('div'); desktopPH.className = 'drag-placeholder';
   document.addEventListener('dragstart', (e) => {
-    const card = e.target.closest('.pedal-card');
-    if (!card) return;
-    draggedTier = card.dataset.tier;
-    draggedId = card.dataset.id;
+    const card = e.target.closest('.pedal-card'); if (!card) return;
+    draggedTier = card.dataset.tier; draggedId = card.dataset.id;
     card.classList.add('dragging');
     e.dataTransfer.effectAllowed = 'move';
     e.dataTransfer.setData('text/plain', draggedId);
   });
-
   document.addEventListener('dragend', (e) => {
-    const card = e.target.closest('.pedal-card');
-    if (card) card.classList.remove('dragging');
-    removeDesktopPlaceholder();
-    document.querySelectorAll('.tier-row').forEach(r => r.classList.remove('drag-over'));
+    const card = e.target.closest('.pedal-card'); if (card) card.classList.remove('dragging');
+    rmDesktopPH(); document.querySelectorAll('.tier-row').forEach(r => r.classList.remove('drag-over'));
     draggedTier = null; draggedId = null;
   });
-
   document.querySelectorAll('.tier-pedals').forEach(zone => {
     zone.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      e.dataTransfer.dropEffect = 'move';
+      e.preventDefault(); e.dataTransfer.dropEffect = 'move';
       zone.closest('.tier-row').classList.add('drag-over');
-      const afterEl = getDragAfterElement(zone, e.clientX);
-      if (desktopPlaceholder.parentElement !== zone) removeDesktopPlaceholder();
-      if (afterEl) zone.insertBefore(desktopPlaceholder, afterEl);
-      else zone.appendChild(desktopPlaceholder);
+      const af = getDragAfter(zone, e.clientX);
+      if (desktopPH.parentElement !== zone) rmDesktopPH();
+      if (af) zone.insertBefore(desktopPH, af); else zone.appendChild(desktopPH);
     });
     zone.addEventListener('dragleave', (e) => {
       if (!zone.contains(e.relatedTarget)) {
         zone.closest('.tier-row').classList.remove('drag-over');
-        if (desktopPlaceholder.parentElement === zone) removeDesktopPlaceholder();
+        if (desktopPH.parentElement === zone) rmDesktopPH();
       }
     });
     zone.addEventListener('drop', (e) => {
-      e.preventDefault();
-      zone.closest('.tier-row').classList.remove('drag-over');
-      removeDesktopPlaceholder();
-      if (!draggedId) return;
-      finalizeDrop(zone, e.clientX, draggedTier, draggedId);
+      e.preventDefault(); zone.closest('.tier-row').classList.remove('drag-over');
+      rmDesktopPH(); if (draggedId) finalizeDrop(zone, e.clientX, draggedTier, draggedId);
     });
   });
 }
+function rmDesktopPH() { if (desktopPH && desktopPH.parentElement) desktopPH.parentElement.removeChild(desktopPH); }
 
-function removeDesktopPlaceholder() {
-  if (desktopPlaceholder && desktopPlaceholder.parentElement) {
-    desktopPlaceholder.parentElement.removeChild(desktopPlaceholder);
-  }
-}
-
-// ══════════════════════════════════════
+// ══════════════════════════════════
 //  TOUCH DRAG & DROP
-// ══════════════════════════════════════
+// ══════════════════════════════════
 let touchDragState = null;
-
 function setupTouchDragDrop() {
   if (!isTouchDevice) return;
-
   const ghost = document.getElementById('touch-ghost');
-  let longPressTimer = null;
-  let startTouch = null;
+  let lpt = null, startTouch = null;
 
-  // Prevent default touch on pedal cards to stop scroll-while-dragging
   document.addEventListener('touchstart', (e) => {
     const card = e.target.closest('.pedal-card');
     if (!card || e.target.closest('.remove-btn')) { startTouch = null; return; }
-
     const t = e.touches[0];
     startTouch = { x: t.clientX, y: t.clientY, card, moved: false };
-
-    longPressTimer = setTimeout(() => {
-      if (startTouch && !startTouch.moved) {
-        beginTouchDrag(startTouch.card, t);
-      }
-    }, 250);
+    lpt = setTimeout(() => { if (startTouch && !startTouch.moved) beginTouchDrag(startTouch.card, t); }, 250);
   }, { passive: true });
 
   document.addEventListener('touchmove', (e) => {
     const t = e.touches[0];
-
-    // Detect early drag start via movement threshold
     if (startTouch && !touchDragState) {
-      const dx = Math.abs(t.clientX - startTouch.x);
-      const dy = Math.abs(t.clientY - startTouch.y);
-      if (dx > 8 || dy > 8) {
-        startTouch.moved = true;
-        // Only start drag if predominantly horizontal or diagonal, not pure vertical scroll
-        if (dx > 6) {
-          clearTimeout(longPressTimer);
-          longPressTimer = null;
-          beginTouchDrag(startTouch.card, t);
-        }
-      }
+      const dx = Math.abs(t.clientX - startTouch.x), dy = Math.abs(t.clientY - startTouch.y);
+      if (dx > 8 || dy > 8) { startTouch.moved = true; if (dx > 6) { clearTimeout(lpt); lpt = null; beginTouchDrag(startTouch.card, t); } }
     }
-
     if (!touchDragState) return;
-    e.preventDefault(); // Stop scroll while dragging
-
-    ghost.style.left = (t.clientX - touchDragState.offsetX) + 'px';
-    ghost.style.top  = (t.clientY - touchDragState.offsetY) + 'px';
-
-    // Highlight tier under finger
+    e.preventDefault();
+    ghost.style.left = (t.clientX - touchDragState.ox) + 'px';
+    ghost.style.top  = (t.clientY - touchDragState.oy) + 'px';
     document.querySelectorAll('.tier-row').forEach(r => r.classList.remove('drag-over'));
-    const overZone = getTierZoneAt(t.clientX, t.clientY);
-    if (overZone) {
-      overZone.closest('.tier-row').classList.add('drag-over');
-      const ph = touchDragState.placeholder;
-      if (ph.parentElement !== overZone) removeTouchPlaceholder();
-      const afterEl = getDragAfterElement(overZone, t.clientX);
-      if (afterEl) overZone.insertBefore(ph, afterEl);
-      else overZone.appendChild(ph);
-    } else {
-      removeTouchPlaceholder();
-    }
+    const oz = getTierZoneAt(t.clientX, t.clientY);
+    if (oz) {
+      oz.closest('.tier-row').classList.add('drag-over');
+      const ph = touchDragState.ph;
+      if (ph.parentElement !== oz) rmTouchPH();
+      const af = getDragAfter(oz, t.clientX);
+      if (af) oz.insertBefore(ph, af); else oz.appendChild(ph);
+    } else { rmTouchPH(); }
   }, { passive: false });
 
   document.addEventListener('touchend', (e) => {
-    clearTimeout(longPressTimer);
-    longPressTimer = null;
-    startTouch = null;
-
+    clearTimeout(lpt); lpt = null; startTouch = null;
     if (!touchDragState) return;
     const t = e.changedTouches[0];
     ghost.style.display = 'none';
     document.querySelectorAll('.tier-row').forEach(r => r.classList.remove('drag-over'));
-
-    const overZone = getTierZoneAt(t.clientX, t.clientY);
-    if (overZone && touchDragState.id) {
-      removeTouchPlaceholder();
-      finalizeDrop(overZone, t.clientX, touchDragState.sourceTier, touchDragState.id);
-    } else {
-      removeTouchPlaceholder();
-    }
-
-    if (touchDragState.sourceCard) touchDragState.sourceCard.classList.remove('dragging');
+    const oz = getTierZoneAt(t.clientX, t.clientY);
+    rmTouchPH();
+    if (oz && touchDragState.id) finalizeDrop(oz, t.clientX, touchDragState.st, touchDragState.id);
+    if (touchDragState.sc) touchDragState.sc.classList.remove('dragging');
     touchDragState = null;
   }, { passive: true });
 
   document.addEventListener('touchcancel', () => {
-    clearTimeout(longPressTimer);
-    longPressTimer = null;
-    startTouch = null;
+    clearTimeout(lpt); lpt = null; startTouch = null;
     if (!touchDragState) return;
     ghost.style.display = 'none';
     document.querySelectorAll('.tier-row').forEach(r => r.classList.remove('drag-over'));
-    if (touchDragState.sourceCard) touchDragState.sourceCard.classList.remove('dragging');
-    removeTouchPlaceholder();
-    touchDragState = null;
+    if (touchDragState.sc) touchDragState.sc.classList.remove('dragging');
+    rmTouchPH(); touchDragState = null;
   }, { passive: true });
 
-  // Tap to toggle remove button on mobile
   document.addEventListener('click', (e) => {
     if (touchDragState) return;
     const card = e.target.closest('.pedal-card');
-    document.querySelectorAll('.pedal-card.show-remove').forEach(c => {
-      if (c !== card) c.classList.remove('show-remove');
-    });
-    if (card && !e.target.closest('.remove-btn')) {
-      card.classList.toggle('show-remove');
-    }
+    document.querySelectorAll('.pedal-card.show-remove').forEach(c => { if (c !== card) c.classList.remove('show-remove'); });
+    if (card && !e.target.closest('.remove-btn')) card.classList.toggle('show-remove');
   });
 }
-
 function beginTouchDrag(card, touch) {
-  if (touchDragState) return; // Already dragging
+  if (touchDragState) return;
   const ghost = document.getElementById('touch-ghost');
   const rect = card.getBoundingClientRect();
-
-  card.classList.add('dragging');
-  card.classList.remove('show-remove');
-
-  const ghostW = Math.min(rect.width * 1.15, 90);
-  const scale = ghostW / rect.width;
-  const ghostH = rect.height * scale;
-
-  ghost.style.width = ghostW + 'px';
-  ghost.style.height = ghostH + 'px';
-  ghost.style.display = 'block';
-  const imgEl = card.querySelector('img');
-  ghost.innerHTML = imgEl ? `<img src="${imgEl.src}">` : '';
-  ghost.style.left = (touch.clientX - ghostW/2) + 'px';
-  ghost.style.top  = (touch.clientY - ghostH/2) + 'px';
-
-  touchDragState = {
-    sourceCard: card,
-    sourceTier: card.dataset.tier,
-    id: card.dataset.id,
-    offsetX: ghostW / 2,
-    offsetY: ghostH / 2,
-    placeholder: document.createElement('div'),
-  };
-  touchDragState.placeholder.className = 'drag-placeholder';
-
+  card.classList.add('dragging'); card.classList.remove('show-remove');
+  const gw = Math.min(rect.width * 1.15, 90), sc = gw / rect.width, gh = rect.height * sc;
+  ghost.style.width = gw+'px'; ghost.style.height = gh+'px'; ghost.style.display = 'block';
+  const img = card.querySelector('img');
+  ghost.innerHTML = img ? `<img src="${img.src}">` : '';
+  ghost.style.left = (touch.clientX - gw/2)+'px'; ghost.style.top = (touch.clientY - gh/2)+'px';
+  const ph = document.createElement('div'); ph.className = 'drag-placeholder';
+  touchDragState = { sc: card, st: card.dataset.tier, id: card.dataset.id, ox: gw/2, oy: gh/2, ph };
   if (navigator.vibrate) navigator.vibrate(25);
 }
-
 function getTierZoneAt(x, y) {
-  // Check tier rows broadly
-  const rows = document.querySelectorAll('.tier-row');
-  for (const row of rows) {
-    const rect = row.getBoundingClientRect();
-    if (x >= rect.left && x <= rect.right && y >= rect.top - 8 && y <= rect.bottom + 8) {
+  for (const row of document.querySelectorAll('.tier-row')) {
+    const r = row.getBoundingClientRect();
+    if (x >= r.left && x <= r.right && y >= r.top - 8 && y <= r.bottom + 8)
       return row.querySelector('.tier-pedals');
-    }
   }
   return null;
 }
-
-function removeTouchPlaceholder() {
-  if (touchDragState && touchDragState.placeholder && touchDragState.placeholder.parentElement) {
-    touchDragState.placeholder.parentElement.removeChild(touchDragState.placeholder);
-  }
+function rmTouchPH() {
+  if (touchDragState && touchDragState.ph && touchDragState.ph.parentElement)
+    touchDragState.ph.parentElement.removeChild(touchDragState.ph);
 }
 
-// ─── Shared ───
-function finalizeDrop(zone, clientX, sourceTier, id) {
-  const targetTier = zone.id.replace('tier-', '');
-  const idx = tierData[sourceTier].findIndex(p => p.id === id);
+// ─── Shared drop ───
+function finalizeDrop(zone, cx, srcTier, id) {
+  const tgtTier = zone.id.replace('tier-', '');
+  const idx = tierData[srcTier].findIndex(p => p.id === id);
   if (idx === -1) return;
-  const [entry] = tierData[sourceTier].splice(idx, 1);
-
-  const afterEl = getDragAfterElement(zone, clientX);
-  let insertAt;
-  if (afterEl && afterEl.dataset && afterEl.dataset.id) {
-    insertAt = tierData[targetTier].findIndex(p => p.id === afterEl.dataset.id);
-    if (insertAt === -1) insertAt = tierData[targetTier].length;
-  } else {
-    insertAt = tierData[targetTier].length;
-  }
-  tierData[targetTier].splice(insertAt, 0, entry);
-
-  renderTier(sourceTier);
-  if (sourceTier !== targetTier) renderTier(targetTier);
+  const [entry] = tierData[srcTier].splice(idx, 1);
+  const af = getDragAfter(zone, cx);
+  let ins;
+  if (af && af.dataset && af.dataset.id) {
+    ins = tierData[tgtTier].findIndex(p => p.id === af.dataset.id);
+    if (ins === -1) ins = tierData[tgtTier].length;
+  } else { ins = tierData[tgtTier].length; }
+  tierData[tgtTier].splice(ins, 0, entry);
+  renderTier(srcTier); if (srcTier !== tgtTier) renderTier(tgtTier);
   autoSave();
 }
-
-function getDragAfterElement(container, x) {
-  const cards = [...container.querySelectorAll('.pedal-card:not(.dragging)')];
-  let closest = null;
-  let closestOffset = Infinity;
-  for (const card of cards) {
-    const box = card.getBoundingClientRect();
-    const offset = x - (box.left + box.width / 2);
-    if (offset < 0 && -offset < closestOffset) {
-      closestOffset = -offset;
-      closest = card;
-    }
+function getDragAfter(container, x) {
+  let closest = null, co = Infinity;
+  for (const card of container.querySelectorAll('.pedal-card:not(.dragging)')) {
+    const b = card.getBoundingClientRect();
+    const off = x - (b.left + b.width / 2);
+    if (off < 0 && -off < co) { co = -off; closest = card; }
   }
   return closest;
 }
 
 // ─── Save/Load ───
-function autoSave() { localStorage.setItem('pedalTierList', JSON.stringify(tierData)); }
-
-function saveTierList() {
-  const blob = new Blob([JSON.stringify(tierData, null, 2)], { type: 'application/json' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'pedal-tier-list.json';
-  a.click();
-  URL.revokeObjectURL(a.href);
+function autoSave() {
+  localStorage.setItem('pedalTierList_v2', JSON.stringify({ tiers: tierData, title: canvasTitle }));
 }
-
+function saveTierList() {
+  const blob = new Blob([JSON.stringify({ tiers: tierData, title: canvasTitle }, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = 'ivanizer.json';
+  a.click(); URL.revokeObjectURL(a.href);
+}
 function loadTierList() {
   const input = document.createElement('input');
   input.type = 'file'; input.accept = '.json';
   input.onchange = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+    const file = e.target.files[0]; if (!file) return;
     try {
-      const data = JSON.parse(await file.text());
-      if (data.ultra && data.high && data.mid && data.low) {
-        tierData = data; renderAll(); autoSave();
-      } else { alert('Invalid tier list file.'); }
+      const d = JSON.parse(await file.text());
+      // Support both old format (flat tiers) and new (with title)
+      if (d.tiers) { tierData = d.tiers; canvasTitle = d.title || ''; }
+      else if (d.ultra && d.high && d.mid && d.low) { tierData = d; canvasTitle = ''; }
+      else { alert('Invalid tier list file.'); return; }
+      renderAll(); updateTitleBanner(); autoSave();
     } catch(e) { alert('Could not read file.'); }
   };
   input.click();
 }
-
 function clearAll() {
   if (!confirm('Remove all pedals from all tiers?')) return;
   tierData = { ultra: [], high: [], mid: [], low: [] };
@@ -1086,28 +885,33 @@ async function exportImage() {
   wrap.innerHTML = '<div style="padding:20px;color:#fff;font-size:12px;">Rendering…</div>';
   await new Promise(r => setTimeout(r, 50));
 
-  const TH = 160, PAD = 20, LW = 140, PG = 8, PP = 12;
+  const TH = 160, PAD = 24, LW = 150, PG = 16, PP = 16;
+  const TITLE_H = canvasTitle ? 52 : 0;
   const tiers = ['ultra','high','mid','low'];
   const colors = { ultra:'#ff2d55', high:'#5856d6', mid:'#34c759', low:'#007aff' };
   const labels = { ultra:'ULTRA', high:'HIGH', mid:'MID', low:'LOW' };
 
-  let maxW = 600;
+  // Compute width: ensure row bg always covers pedals
+  let maxPedalRowW = 0;
   for (const t of tiers) {
-    let rw = LW + PP*2;
+    let rw = 0;
     for (const p of tierData[t]) {
       const ar = (p.width && p.height) ? (p.width/p.height) : 0.75;
       rw += (TH - PP*2) * ar + PG;
     }
-    maxW = Math.max(maxW, rw + PAD);
+    maxPedalRowW = Math.max(maxPedalRowW, rw);
   }
+  const minContentW = LW + PP*2 + maxPedalRowW + PAD;
+  const cW = Math.max(700, minContentW + PAD*2);
+  const cH = TITLE_H + tiers.length * TH + (tiers.length + 1) * PAD;
 
-  const cW = maxW + PAD*2, cH = tiers.length * TH + (tiers.length+1) * PAD;
   const canvas = document.createElement('canvas');
   canvas.width = cW*2; canvas.height = cH*2;
   canvas.style.width = cW+'px'; canvas.style.height = cH+'px';
   const ctx = canvas.getContext('2d');
   ctx.scale(2,2);
 
+  // Graph paper
   ctx.fillStyle = '#e8f4f8'; ctx.fillRect(0,0,cW,cH);
   ctx.strokeStyle = 'rgba(0,190,220,0.2)'; ctx.lineWidth = 0.5;
   for (let x=0;x<cW;x+=20){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,cH);ctx.stroke();}
@@ -1116,12 +920,21 @@ async function exportImage() {
   for (let x=0;x<cW;x+=100){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,cH);ctx.stroke();}
   for (let y=0;y<cH;y+=100){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(cW,y);ctx.stroke();}
 
+  // Title
+  if (canvasTitle) {
+    ctx.fillStyle = 'rgba(0,0,0,0.5)';
+    ctx.font = 'bold 22px "Press Start 2P", monospace';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(canvasTitle, cW/2, PAD + TITLE_H/2, cW - PAD*2);
+  }
+
+  // Preload images
   const ic = {}; const lp = [];
   for (const t of tiers) for (const p of tierData[t]) {
     if (!ic[p.image]) {
       const pr = new Promise(res => {
         const img = new Image(); img.crossOrigin='anonymous';
-        img.onload = () => {ic[p.image]=img; res();}; img.onerror = () => {ic[p.image]=null; res();};
+        img.onload = () => {ic[p.image]=img;res();}; img.onerror = () => {ic[p.image]=null;res();};
         img.src = IMAGE_BASE_URL+p.image;
       });
       lp.push(pr); ic[p.image]='loading';
@@ -1129,39 +942,62 @@ async function exportImage() {
   }
   await Promise.all(lp);
 
+  // Draw tiers
   for (let i=0;i<tiers.length;i++) {
-    const t=tiers[i], y=PAD+i*(TH+PAD);
-    ctx.fillStyle='rgba(255,255,255,0.3)'; ctx.beginPath(); ctx.roundRect(PAD,y,cW-PAD*2,TH,8); ctx.fill();
-    ctx.fillStyle=colors[t]; ctx.beginPath(); ctx.roundRect(PAD,y,LW,TH,[8,0,0,8]); ctx.fill();
-    ctx.fillStyle='#fff'; ctx.font='bold 28px "Press Start 2P",monospace';
-    ctx.textAlign='center'; ctx.textBaseline='middle';
-    ctx.shadowColor='rgba(0,0,0,0.4)'; ctx.shadowBlur=4; ctx.shadowOffsetX=2; ctx.shadowOffsetY=2;
-    ctx.fillText(labels[t], PAD+LW/2, y+TH/2);
-    ctx.shadowColor='transparent'; ctx.shadowBlur=0; ctx.shadowOffsetX=0; ctx.shadowOffsetY=0;
+    const t = tiers[i];
+    const y = TITLE_H + PAD + i * (TH + PAD);
+    const rowW = cW - PAD*2;
 
-    let px=PAD+LW+PP; const pH=TH-PP*2;
+    // Row background — full width so pedals never extend past
+    ctx.fillStyle = 'rgba(255,255,255,0.35)';
+    ctx.beginPath(); ctx.roundRect(PAD, y, rowW, TH, 8); ctx.fill();
+
+    // Tier color label
+    ctx.fillStyle = colors[t];
+    ctx.beginPath(); ctx.roundRect(PAD, y, LW, TH, [8,0,0,8]); ctx.fill();
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 26px "Press Start 2P",monospace';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.shadowColor = 'rgba(0,0,0,0.4)'; ctx.shadowBlur = 4;
+    ctx.shadowOffsetX = 2; ctx.shadowOffsetY = 2;
+    ctx.fillText(labels[t], PAD + LW/2, y + TH/2);
+    ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0;
+    ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 0;
+
+    // Pedals
+    let px = PAD + LW + PP;
+    const pH = TH - PP*2;
     for (const p of tierData[t]) {
-      const ar=(p.width&&p.height)?(p.width/p.height):0.75, pW=pH*ar;
-      const img=ic[p.image];
-      if (img&&img!=='loading') ctx.drawImage(img,px,y+PP,pW,pH);
-      else { ctx.fillStyle='#444'; ctx.fillRect(px,y+PP,pW,pH); }
-      px+=pW+PG;
+      const ar = (p.width && p.height) ? (p.width/p.height) : 0.75;
+      const pW = pH * ar;
+      const img = ic[p.image];
+      if (img && img !== 'loading') ctx.drawImage(img, px, y+PP, pW, pH);
+      else { ctx.fillStyle='#444'; ctx.fillRect(px, y+PP, pW, pH); }
+      px += pW + PG;
     }
   }
-  wrap.innerHTML=''; wrap.appendChild(canvas); window._exportCanvas=canvas;
+
+  // Watermark
+  ctx.fillStyle = 'rgba(0,0,0,0.18)';
+  ctx.font = '10px "Space Mono", monospace';
+  ctx.textAlign = 'right'; ctx.textBaseline = 'bottom';
+  ctx.fillText('Ivanizer by Pedalboardom • pedalplayground.com', cW - PAD, cH - 8);
+
+  wrap.innerHTML = ''; wrap.appendChild(canvas); window._exportCanvas = canvas;
 }
 
 function downloadExport() {
   if (!window._exportCanvas) return;
-  const a=document.createElement('a'); a.download='pedal-tier-list.png';
-  a.href=window._exportCanvas.toDataURL('image/png'); a.click();
+  const a = document.createElement('a'); a.download = 'ivanizer.png';
+  a.href = window._exportCanvas.toDataURL('image/png'); a.click();
 }
 function closeExport() {
-  document.getElementById('export-overlay').classList.remove('active'); window._exportCanvas=null;
+  document.getElementById('export-overlay').classList.remove('active');
+  window._exportCanvas = null;
 }
 
 // ─── Util ───
-function escHtml(s) { const d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; }
+function escHtml(s) { const d = document.createElement('div'); d.textContent = s||''; return d.innerHTML; }
 
 // ─── Boot ───
 init();
