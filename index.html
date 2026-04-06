@@ -323,6 +323,31 @@
     .toolbar-sub { display:none; }
     .mode-label { display:none; }
   }
+  /* ─── Toast notification ─── */
+  #toast {
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(80px);
+    background:var(--panel-bg); backdrop-filter:blur(16px);
+    border:1px solid var(--panel-border); border-radius:10px;
+    padding:10px 20px; color:#fff; font-family:var(--ui-font); font-size:13px;
+    font-weight:500; z-index:9000; pointer-events:none;
+    opacity:0; transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1), opacity 0.35s;
+    white-space:nowrap; box-shadow:0 8px 30px rgba(0,0,0,0.4);
+  }
+  #toast.visible { opacity:1; transform:translateX(-50%) translateY(0); }
+
+  /* ─── Shared-view banner ─── */
+  #shared-banner {
+    display:none; padding:6px 14px; text-align:center; flex-shrink:0;
+    background:rgba(90,200,250,0.12); border-bottom:1px solid rgba(90,200,250,0.2);
+  }
+  #shared-banner.visible { display:flex; align-items:center; justify-content:center; gap:10px; }
+  #shared-banner span { color:rgba(255,255,255,0.7); font-size:11px; font-family:var(--ui-font); }
+  #shared-banner button {
+    padding:4px 12px; border:1px solid rgba(90,200,250,0.3); border-radius:5px;
+    background:rgba(90,200,250,0.15); color:#5ac8fa; font-family:var(--ui-font);
+    font-size:11px; font-weight:600; cursor:pointer; white-space:nowrap;
+  }
+  #shared-banner button:hover { background:rgba(90,200,250,0.25); }
 </style>
 </head>
 <body class="mode-default">
@@ -357,12 +382,14 @@
   <div class="toolbar-actions">
     <button class="action-btn" onclick="showTitleModal()">✏️<span class="btn-label"> Title</span></button>
     <button class="action-btn" onclick="exportImage()">📸<span class="btn-label"> Export (PNG)</span></button>
+    <button class="action-btn" onclick="shareURL()" id="share-btn">🔗<span class="btn-label"> Share</span></button>
     <button class="action-btn" onclick="saveTierList()">💾<span class="btn-label"> Save (JSON)</span></button>
     <button class="action-btn" onclick="loadTierList()">📂<span class="btn-label"> Load</span></button>
     <button class="action-btn danger" onclick="clearAll()">🗑<span class="btn-label"> Clear</span></button>
   </div>
 </div>
 
+<div id="shared-banner"><span>Viewing a shared ranking</span><button onclick="claimShared()">Make it mine</button><button onclick="dismissShared()">✕</button></div>
 <div id="title-banner"><span id="title-display"></span></div>
 <div id="tier-container"></div>
 
@@ -405,6 +432,7 @@
       <div class="help-item"><span class="help-icon">✏️</span><span class="help-text"><strong style="color:#fff">Title</strong> — Set a title (e.g. "Every Reverb I've Ever Owned") that appears on the canvas and in exports.</span></div>
       <div class="help-item"><span class="help-icon">🎨</span><span class="help-text"><strong style="color:#fff">Mode</strong> — Switch between Default, Meme, and Cyberattack. Pedals remap automatically.</span></div>
       <div class="help-item"><span class="help-icon">📸</span><span class="help-text"><strong style="color:#fff">Export (PNG)</strong> — Render your tier list as a shareable image.</span></div>
+      <div class="help-item"><span class="help-icon">🔗</span><span class="help-text"><strong style="color:#fff">Share</strong> — Generate a URL that encodes your full ranking. Anyone with the link sees exactly what you see.</span></div>
       <div class="help-item"><span class="help-icon">💾</span><span class="help-text"><strong style="color:#fff">Save (JSON)</strong> — Download your tier list data for backup.</span></div>
       <div class="help-item"><span class="help-icon">📂</span><span class="help-text"><strong style="color:#fff">Load</strong> — Load a previously saved JSON file.</span></div>
       <div class="help-item"><span class="help-icon">🗑</span><span class="help-text"><strong style="color:#fff">Clear</strong> — Remove all pedals from every tier.</span></div>
@@ -448,6 +476,7 @@
 </div>
 
 <div id="touch-ghost" style="display:none;"></div>
+<div id="toast"></div>
 
 <script>
 const PEDALS_JSON_URL = 'https://raw.githubusercontent.com/PedalPlayground/pedalplayground/master/public/data/pedals.json';
@@ -501,6 +530,10 @@ let currentMode = 'default';
 let tierData = {};
 let canvasTitle = '';
 let searchActiveIndex = -1;
+let isSharedView = false;   // true when loaded from URL hash; suppresses autoSave until user edits
+let pedalIndexMap = null;    // Map<image_filename, index> for encoding
+let pedalIndexArr = null;    // sorted image filename array for decoding
+const SHARE_VERSION = 0;     // bump when pedal list snapshot changes
 
 function initEmpty(mode) { const td={}; MODE_CONFIG[mode].tiers.forEach(t=>td[t]=[]); return td; }
 
@@ -568,24 +601,262 @@ async function init() {
     allPedals.sort((a,b) => { const ba=(a.Brand||'').localeCompare(b.Brand||''); return ba!==0?ba:(a.Name||'').localeCompare(b.Name||''); });
   } catch(e) { console.error(e); alert('Could not load pedal database.'); }
 
-  const saved = localStorage.getItem('pranker_v1');
-  if (saved) {
-    try {
-      const d = JSON.parse(saved);
-      if (d.mode && MODE_CONFIG[d.mode]) currentMode = d.mode;
-      if (d.tiers) tierData = d.tiers;
-      if (d.title) canvasTitle = d.title;
-    } catch(e) {}
+  // Build pedal index for share encoding/decoding
+  buildPedalIndex();
+
+  // Check for shared URL hash first, then fall back to localStorage
+  let loadedFromHash = false;
+  if (window.location.hash) {
+    loadedFromHash = loadFromHash();
   }
+
+  if (!loadedFromHash) {
+    const saved = localStorage.getItem('pranker_v1');
+    if (saved) {
+      try {
+        const d = JSON.parse(saved);
+        if (d.mode && MODE_CONFIG[d.mode]) currentMode = d.mode;
+        if (d.tiers) tierData = d.tiers;
+        if (d.title) canvasTitle = d.title;
+      } catch(e) {}
+    }
+  }
+
   MODE_CONFIG[currentMode].tiers.forEach(t => { if (!tierData[t]) tierData[t] = []; });
 
   document.body.className = `mode-${currentMode}`;
   document.getElementById('mode-select').value = currentMode;
   buildTierRows(); renderAll(); updateTitleBanner();
 
+  if (isSharedView) {
+    document.getElementById('shared-banner').classList.add('visible');
+  }
+
   document.getElementById('loading').classList.add('hidden');
   setTimeout(()=>{const el=document.getElementById('loading');if(el)el.remove();},500);
   setupSearch(); setupDesktopDragDrop(); setupTouchDragDrop();
+}
+
+// ═══════════════════════════════════════
+// ═══ SHARE: ENCODE / DECODE MODULE ═══
+// ═══════════════════════════════════════
+
+const MODE_IDS = { default:0, meme:1, cyberattack:2 };
+const MODE_FROM_ID = ['default','meme','cyberattack'];
+
+function buildPedalIndex() {
+  // Build a sorted array of Image filenames and a reverse lookup map
+  pedalIndexArr = allPedals.map(p => p.Image);
+  // pedalIndexArr is already in the same order as allPedals (sorted by Brand/Name)
+  pedalIndexMap = new Map();
+  for (let i = 0; i < pedalIndexArr.length; i++) {
+    pedalIndexMap.set(pedalIndexArr[i], i);
+  }
+}
+
+function encodeRanking() {
+  // Returns a base64url string encoding the current state
+  if (!pedalIndexMap) return null;
+
+  const cfg = MODE_CONFIG[currentMode];
+  const tiers = cfg.tiers;
+  const tierSizes = tiers.map(t => (tierData[t] || []).length);
+  const totalPedals = tierSizes.reduce((a, b) => a + b, 0);
+  if (totalPedals === 0) return null;
+
+  // Header: version(1) + modeId(1) + tierCount(1) + tierSizes(N) + pedalIndices(2*P)
+  const headerLen = 3 + tiers.length;
+  const buf = new Uint8Array(headerLen + totalPedals * 2);
+  let offset = 0;
+
+  // Byte 0: mapping version
+  buf[offset++] = SHARE_VERSION;
+  // Byte 1: mode ID
+  buf[offset++] = MODE_IDS[currentMode] ?? 0;
+  // Byte 2: number of tiers
+  buf[offset++] = tiers.length;
+  // Tier sizes (1 byte each)
+  for (const sz of tierSizes) {
+    buf[offset++] = sz;
+  }
+  // Pedal indices (2 bytes each, big-endian), in tier order top to bottom
+  for (const t of tiers) {
+    for (const p of (tierData[t] || [])) {
+      const idx = pedalIndexMap.get(p.image);
+      if (idx === undefined) {
+        console.warn('Unknown pedal image for encoding:', p.image);
+        buf[offset++] = 0xFF;
+        buf[offset++] = 0xFF;
+      } else {
+        buf[offset++] = (idx >> 8) & 0xFF;
+        buf[offset++] = idx & 0xFF;
+      }
+    }
+  }
+
+  return bufToBase64url(buf.slice(0, offset));
+}
+
+function decodeRanking(encoded) {
+  // Returns { mode, tierData, error? } or null on failure
+  if (!pedalIndexArr) return null;
+  try {
+    const buf = base64urlToBuf(encoded);
+    if (buf.length < 3) return null;
+    let offset = 0;
+
+    const version = buf[offset++];
+    // We only know version 0 for now; future versions could branch here
+    if (version > SHARE_VERSION) {
+      return { error: 'This link was created with a newer version of PRanker.' };
+    }
+
+    const modeId = buf[offset++];
+    const mode = MODE_FROM_ID[modeId];
+    if (!mode || !MODE_CONFIG[mode]) return { error: 'Unknown mode in shared link.' };
+
+    const tierCount = buf[offset++];
+    const cfg = MODE_CONFIG[mode];
+    if (tierCount !== cfg.tiers.length) return { error: 'Tier count mismatch.' };
+
+    // Read tier sizes
+    if (offset + tierCount > buf.length) return { error: 'Truncated link data.' };
+    const tierSizes = [];
+    for (let i = 0; i < tierCount; i++) {
+      tierSizes.push(buf[offset++]);
+    }
+
+    // Read pedal indices
+    const td = {};
+    for (let i = 0; i < tierCount; i++) {
+      const tier = cfg.tiers[i];
+      td[tier] = [];
+      for (let j = 0; j < tierSizes[i]; j++) {
+        if (offset + 2 > buf.length) return { error: 'Truncated pedal data.' };
+        const idx = (buf[offset] << 8) | buf[offset + 1];
+        offset += 2;
+        if (idx === 0xFFFF || idx >= allPedals.length) {
+          // Skip unknown pedals (removed from database since link was created)
+          continue;
+        }
+        const p = allPedals[idx];
+        td[tier].push({
+          id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+          brand: p.Brand,
+          name: p.Name,
+          image: p.Image,
+          width: p.Width,
+          height: p.Height,
+        });
+      }
+    }
+
+    return { mode, tierData: td };
+  } catch (e) {
+    console.error('Decode error:', e);
+    return { error: 'Could not decode shared link.' };
+  }
+}
+
+// ─── Base64url helpers (no padding, URL-safe) ───
+function bufToBase64url(buf) {
+  let binary = '';
+  for (let i = 0; i < buf.length; i++) binary += String.fromCharCode(buf[i]);
+  return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+function base64urlToBuf(str) {
+  str = str.replace(/-/g, '+').replace(/_/g, '/');
+  // Add padding
+  while (str.length % 4) str += '=';
+  const binary = atob(str);
+  const buf = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) buf[i] = binary.charCodeAt(i);
+  return buf;
+}
+
+// ─── Hash read/write ───
+function loadFromHash() {
+  const hash = window.location.hash.slice(1); // remove '#'
+  if (!hash) return false;
+  const params = new URLSearchParams(hash);
+  const encoded = params.get('r');
+  if (!encoded) return false;
+
+  const result = decodeRanking(encoded);
+  if (!result) return false;
+  if (result.error) {
+    console.warn('Share link error:', result.error);
+    showToast(result.error);
+    return false;
+  }
+
+  currentMode = result.mode;
+  tierData = result.tierData;
+  canvasTitle = params.get('t') ? decodeURIComponent(params.get('t')) : '';
+  isSharedView = true;
+  return true;
+}
+
+function buildShareHash() {
+  const encoded = encodeRanking();
+  if (!encoded) return null;
+  let hash = `r=${encoded}`;
+  if (canvasTitle) {
+    hash += `&t=${encodeURIComponent(canvasTitle)}`;
+  }
+  return hash;
+}
+
+// ─── Share action ───
+async function shareURL() {
+  const hash = buildShareHash();
+  if (!hash) {
+    showToast('Add some pedals first!');
+    return;
+  }
+  const url = `${window.location.origin}${window.location.pathname}#${hash}`;
+
+  // Update the URL bar without reloading
+  history.replaceState(null, '', `#${hash}`);
+
+  // Copy to clipboard
+  try {
+    await navigator.clipboard.writeText(url);
+    showToast('Link copied to clipboard!');
+  } catch (e) {
+    // Fallback for older browsers / non-HTTPS
+    const ta = document.createElement('textarea');
+    ta.value = url;
+    ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showToast('Link copied!');
+  }
+}
+
+// ─── Shared-view banner actions ───
+function claimShared() {
+  isSharedView = false;
+  document.getElementById('shared-banner').classList.remove('visible');
+  autoSave();
+  showToast('Ranking saved as yours!');
+}
+
+function dismissShared() {
+  document.getElementById('shared-banner').classList.remove('visible');
+}
+
+// ─── Toast ───
+let toastTimer = null;
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('visible');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('visible'), 2500);
 }
 
 // ─── Search ───
@@ -649,7 +920,14 @@ function finalizeDrop(zone,cx,srcT,id){const tgtT=zone.id.replace('tier-','');co
 function getDragAfter(container,x){let closest=null,co=Infinity;for(const card of container.querySelectorAll('.pedal-card:not(.dragging)')){const b=card.getBoundingClientRect();const off=x-(b.left+b.width/2);if(off<0&&-off<co){co=-off;closest=card;}}return closest;}
 
 // ─── Save/Load ───
-function autoSave(){localStorage.setItem('pranker_v1',JSON.stringify({mode:currentMode,tiers:tierData,title:canvasTitle}));}
+function autoSave(){
+  if (isSharedView) {
+    // User is editing a shared ranking — claim it as their own
+    isSharedView = false;
+    document.getElementById('shared-banner').classList.remove('visible');
+  }
+  localStorage.setItem('pranker_v1',JSON.stringify({mode:currentMode,tiers:tierData,title:canvasTitle}));
+}
 function saveTierList(){const blob=new Blob([JSON.stringify({mode:currentMode,tiers:tierData,title:canvasTitle},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=getFilename('json');a.click();URL.revokeObjectURL(a.href);}
 function loadTierList(){const input=document.createElement('input');input.type='file';input.accept='.json';input.onchange=async e=>{const file=e.target.files[0];if(!file)return;try{const d=JSON.parse(await file.text());if(d.mode&&d.tiers&&MODE_CONFIG[d.mode]){currentMode=d.mode;tierData=d.tiers;canvasTitle=d.title||'';}else if(d.tiers){tierData=d.tiers;canvasTitle=d.title||'';}else if(d.ultra||d.s){tierData=d;canvasTitle='';}else{alert('Invalid file.');return;}MODE_CONFIG[currentMode].tiers.forEach(t=>{if(!tierData[t])tierData[t]=[];});document.body.className=`mode-${currentMode}`;document.getElementById('mode-select').value=currentMode;buildTierRows();renderAll();updateTitleBanner();autoSave();}catch(e){alert('Could not read file.');}};input.click();}
 function clearAll(){if(!confirm('Remove all pedals from all tiers?'))return;tierData=initEmpty(currentMode);renderAll();autoSave();}
